@@ -145,17 +145,17 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [[package]]
 name = "pyfony-bundles"
-version = "0.3.1"
+version = "0.3.2"
 description = "Pyfony Framework bundles base package"
 category = "main"
 optional = false
-python-versions = ">=3.7.3,<3.8.0"
+python-versions = ">=3.7,<4.0"
 
 [package.dependencies]
-importlib-metadata = ">=3.3.0"
+importlib-metadata = ">=3.3,<4.0"
 injecta = ">=0.9.0,<0.10.0"
-python-box = ">=3.4.0,<3.5.0"
-tomlkit = ">=0.5.0,<0.6.0"
+python-box = ">=3.4,<4.0"
+tomlkit = ">=0.5.8,<1.0.0"
 
 [[package]]
 name = "pylint"
@@ -282,8 +282,8 @@ testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
 lock-version = "1.1"
-python-versions = "~3.7.3"
-content-hash = "df08f3dea079ef5f8a4a5cc0112b6dc56c0a0df51d8fc1932aaa676859382198"
+python-versions = "^3.7"
+content-hash = "6d88c04df55893a9d02cd1277f14921a63726fff1e3178d1142ea1ff766eafc1"
 
 [metadata.files]
 astroid = [
@@ -357,7 +357,7 @@ py = [
     {file = "py-1.8.1.tar.gz", hash = "sha256:5e27081401262157467ad6e7f851b7aa402c5852dbcb3dae06768434de5752aa"},
 ]
 pyfony-bundles = [
-    {file = "pyfony_bundles-0.3.1-py3-none-any.whl", hash = "sha256:e7e92bec1de451de13dacdd684f999fd1ffbfc7e7375bec1717c08ed249a7de1"},
+    {file = "pyfony_bundles-0.3.2-py3-none-any.whl", hash = "sha256:212a0a2bb7d9ba0faf0f56c283da4da7113d507d196ecde00913281511a11ef2"},
 ]
 pylint = [
     {file = "pylint-2.4.4-py3-none-any.whl", hash = "sha256:886e6afc935ea2590b462664b161ca9a5e40168ea99e5300935f6591ad467df4"},
