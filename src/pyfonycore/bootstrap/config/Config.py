@@ -1,29 +1,28 @@
 class Config:
-
     def __init__(
         self,
-        containerInitFunction: callable,
-        kernelClass: type,
-        rootModuleName: str,
-        allowedEnvironments: list,
+        container_init_function: callable,
+        kernel_class: type,
+        root_module_name: str,
+        allowed_environments: list,
     ):
-        self.__containerInitFunction = containerInitFunction
-        self.__kernelClass = kernelClass
-        self.__rootModuleName = rootModuleName
-        self.__allowedEnvironments = allowedEnvironments
+        self.__container_init_function = container_init_function
+        self.__kernel_class = kernel_class
+        self.__root_module_name = root_module_name
+        self.__allowed_environments = allowed_environments
 
     @property
-    def containerInitFunction(self):
-        return self.__containerInitFunction
+    def container_init_function(self):
+        return self.__container_init_function
 
     @property
-    def kernelClass(self):
-        return self.__kernelClass
+    def kernel_class(self):
+        return self.__kernel_class
 
     @property
-    def rootModuleName(self):
-        return self.__rootModuleName
+    def root_module_name(self):
+        return self.__root_module_name
 
     @property
-    def allowedEnvironments(self):
-        return self.__allowedEnvironments
+    def allowed_environments(self):
+        return self.__allowed_environments

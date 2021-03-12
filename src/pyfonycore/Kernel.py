@@ -8,57 +8,53 @@ from injecta.container.ContainerInterface import ContainerInterface
 from pyfonybundles.Bundle import Bundle
 from pyfonycore.container.PyfonyHook import PyfonyHooks
 
+
 class Kernel:
 
-    _allowedEnvironments = ['dev', 'test', 'prod']
+    _allowed_environments = ["dev", "test", "prod"]
 
     def __init__(
         self,
-        appEnv: str,
-        configDir: str,
-        configReader: ConfigReaderInterface,
+        app_env: str,
+        config_dir: str,
+        config_reader: ConfigReaderInterface,
         bundles: List[Bundle] = None,
     ):
-        self._appEnv = appEnv
-        self._configDir = configDir
-        self.__configReader = configReader
+        self._app_env = app_env
+        self._config_dir = config_dir
+        self.__config_reader = config_reader
         self._bundles = bundles or []
-        self._containerBuilder = ContainerBuilder()
+        self._container_builder = ContainerBuilder()
 
-    def setAllowedEnvironments(self, allowedEnvironments: list):
-        self._allowedEnvironments = allowedEnvironments
+    def set_allowed_environments(self, allowed_environments: list):
+        self._allowed_environments = allowed_environments
 
-    def initContainer(self) -> ContainerInterface:
-        if self._appEnv not in self._allowedEnvironments:
-            raise Exception(f'Unexpected environment: {self._appEnv}')
+    def init_container(self) -> ContainerInterface:
+        if self._app_env not in self._allowed_environments:
+            raise Exception(f"Unexpected environment: {self._app_env}")
 
-        hooks = self._createPyfonyHooks()
-        return self._initContainerFromHooks(hooks)
+        hooks = self._create_pyfony_hooks()
+        return self._init_container_from_hooks(hooks)
 
-    def _initContainerFromHooks(self, hooks: PyfonyHooks):
-        config = self.__configReader.read(self._getConfigPath())
-        containerBuild = self._containerBuilder.build(config, hooks)
-        return self._initAndBootContainer(containerBuild)
+    def _init_container_from_hooks(self, hooks: PyfonyHooks):
+        config = self.__config_reader.read(self._get_config_path())
+        container_build = self._container_builder.build(config, hooks)
+        return self._init_and_boot_container(container_build)
 
-    def _createPyfonyHooks(self):
-        return PyfonyHooks(
-            self._bundles,
-            self._getConfigPath(),
-            self._getProjectBundlesConfigDir(),
-            self._appEnv
-        )
+    def _create_pyfony_hooks(self):
+        return PyfonyHooks(self._bundles, self._get_config_path(), self._get_project_bundles_config_dir(), self._app_env)
 
-    def _initAndBootContainer(self, containerBuild: ContainerBuild):
-        container = ContainerInitializer().init(containerBuild)
+    def _init_and_boot_container(self, container_build: ContainerBuild):
+        container = ContainerInitializer().init(container_build)
         self._boot(container)
 
         return container
 
-    def _getConfigPath(self):
-        return f'{self._configDir}/config_{self._appEnv}.yaml'
+    def _get_config_path(self):
+        return f"{self._config_dir}/config_{self._app_env}.yaml"
 
-    def _getProjectBundlesConfigDir(self):
-        return os.path.dirname(self._getConfigPath()) + '/bundles'
+    def _get_project_bundles_config_dir(self):
+        return os.path.dirname(self._get_config_path()) + "/bundles"
 
     def _boot(self, container: ContainerInterface):
         for bundle in self._bundles:

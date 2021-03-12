@@ -10,50 +10,43 @@ from injecta.service.ServiceAlias import ServiceAlias
 from pyfonybundles.Bundle import Bundle
 from pyfonybundles.BundleManager import BundleManager
 
+
 class PyfonyHooks(Hooks):
+    def __init__(self, bundles: List[Bundle], config_path: str, project_bundles_config_dir: str, app_env: str):
+        self.__config_merger = ConfigMerger()
+        self.__bundle_manager = BundleManager(bundles)
+        self.__config_path = config_path
+        self.__project_bundles_config_dir = project_bundles_config_dir
+        self.__app_env = app_env
 
-    def __init__(
-        self,
-        bundles: List[Bundle],
-        configPath: str,
-        projectBundlesConfigDir: str,
-        appEnv: str
-    ):
-        self.__configMerger = ConfigMerger()
-        self.__bundleManager = BundleManager(bundles)
-        self.__configPath = configPath
-        self.__projectBundlesConfigDir = projectBundlesConfigDir
-        self.__appEnv = appEnv
+    def start(self, raw_config: dict) -> dict:
+        bundles_config = self.__bundle_manager.get_bundles_config()
+        project_bundles_config = self.__bundle_manager.get_project_bundles_config(self.__project_bundles_config_dir)
 
-    def start(self, rawConfig: dict) -> dict:
-        bundlesConfig = self.__bundleManager.getBundlesConfig()
-        projectBundlesConfig = self.__bundleManager.getProjectBundlesConfig(self.__projectBundlesConfigDir)
+        raw_config = self.__config_merger.merge(self.__config_merger.merge(bundles_config, project_bundles_config), raw_config)
 
-        rawConfig = self.__configMerger.merge(
-            self.__configMerger.merge(bundlesConfig, projectBundlesConfig),
-            rawConfig
-        )
+        return self.__bundle_manager.modify_raw_config(raw_config)
 
-        return self.__bundleManager.modifyRawConfig(rawConfig)
+    def services_prepared(
+        self, services: List[Service], aliases: List[ServiceAlias], parameters: Box
+    ) -> Tuple[List[Service], List[ServiceAlias]]:
+        return self.__bundle_manager.modify_services(services, aliases, parameters)
 
-    def servicesPrepared(self, services: List[Service], aliases: List[ServiceAlias], parameters: Box) -> Tuple[List[Service], List[ServiceAlias]]:
-        return self.__bundleManager.modifyServices(services, aliases, parameters)
-
-    def getCustomParameters(self) -> dict:
-        pyfonyCustomParameters = {
-            'project': {
-                'configDir': os.path.dirname(self.__configPath),
+    def get_custom_parameters(self) -> dict:
+        pyfony_custom_parameters = {
+            "project": {
+                "config_dir": os.path.dirname(self.__config_path),
             },
-            'kernel': {
-                'environment': self.__appEnv,
+            "kernel": {
+                "environment": self.__app_env,
             },
         }
 
-        return self.__configMerger.merge(super().getCustomParameters(), pyfonyCustomParameters, False)
+        return self.__config_merger.merge(super().get_custom_parameters(), pyfony_custom_parameters, False)
 
-    def parametersParsed(self, parameters: Box) -> Box:
-        return self.__bundleManager.modifyParameters(parameters)
+    def parameters_parsed(self, parameters: Box) -> Box:
+        return self.__bundle_manager.modify_parameters(parameters)
 
-    def containerBuildReady(self, containerBuild: ContainerBuild):
-        for compilerPass in self.__bundleManager.getCompilerPasses(): # type: CompilerPassInterface
-            compilerPass.process(containerBuild)
+    def container_build_ready(self, container_build: ContainerBuild):
+        for compiler_pass in self.__bundle_manager.get_compiler_passes():  # type: CompilerPassInterface
+            compiler_pass.process(container_build)
