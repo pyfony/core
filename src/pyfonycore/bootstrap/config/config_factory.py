@@ -16,6 +16,6 @@ def create(raw_config, pyproject_source: str):
     return Config(
         init_container,
         kernel_class_resolver.resolve(raw_config),
-        root_module_name_resolver.resolve(raw_config, pyproject_source),
+        root_module_name_resolver.resolve(raw_config),
         allowed_environments_resolver.resolve(raw_config),
     )
