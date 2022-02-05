@@ -22,7 +22,7 @@ class Kernel:
     ):
         self._app_env = app_env
         self._config_dir = config_dir
-        self.__config_reader = config_reader
+        self._config_reader = config_reader
         self._bundles = bundles or []
         self._container_builder = ContainerBuilder()
 
@@ -36,8 +36,11 @@ class Kernel:
         hooks = self._create_pyfony_hooks()
         return self._init_container_from_hooks(hooks)
 
+    def _read_config(self):
+        return self._config_reader.read(self._get_config_path())
+
     def _init_container_from_hooks(self, hooks: PyfonyHooks):
-        config = self.__config_reader.read(self._get_config_path())
+        config = self._read_config()
         container_build = self._container_builder.build(config, hooks)
         return self._init_and_boot_container(container_build)
 
