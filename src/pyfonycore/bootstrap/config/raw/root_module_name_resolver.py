@@ -11,7 +11,10 @@ def resolve(raw_config):
 
 
 def _unify_module_name(name: str):
-    return name.rstrip(".py")
+    if name.endswith(".py"):
+        return name[:-3]
+
+    return name
 
 
 def _get_root_module_name_search_exclude(raw_config):
