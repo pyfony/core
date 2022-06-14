@@ -27,6 +27,8 @@ def _get_root_module_name_search_exclude(raw_config):
 
 
 def _resolve_root_module_name(root_module_name_search_exclude: list):
+    root_module_name_search_exclude.append("__pycache__")
+
     root_modules = [_unify_module_name(module_name) for module_name in os.listdir(f"{os.getcwd()}/src")]
     root_modules = [root_module for root_module in root_modules if root_module not in root_module_name_search_exclude]
 
